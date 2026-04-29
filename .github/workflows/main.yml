@@ -15,10 +15,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Fix package.json
-        run: |
-          sed -i 's/"react": "18.3.2"/"react": "18.3.1"/' package.json
-          cat package.json | grep '"react"'
+      - name: Fix react version
+        run: sed -i 's/"react": "18.3.2"/"react": "18.3.1"/' package.json
 
       - name: Install deps
         run: npm install --legacy-peer-deps
@@ -28,5 +26,8 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: Init EAS project
+        run: eas init --id fuse-scooter --non-interactive || true
+
       - name: Build APK
-        run: eas build --platform android --profile preview --non-interactive
+        run: eas build --platform android --profile preview --non-interactive --no-wait
