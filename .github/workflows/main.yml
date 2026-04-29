@@ -11,34 +11,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Fix react version
+      - name: Fix versions in package.json
         run: |
           sed -i 's/"react": "18.3.2"/"react": "18.3.1"/' package.json
           sed -i 's/"react-native": "0.76.5"/"react-native": "0.76.3"/' package.json
-          echo "Versions fixed"
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm install --legacy-peer-deps
 
-      - name: Setup Expo
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
 
-      - name: Build Android APK
-        run: |
-          eas build \
-            --platform android \
-            --profile preview \
-            --non-interactive \
-            --no-wait
-          echo "Build submitted"
+      - name: Login check
+        run: eas whoami
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Init EAS project
+        run: eas init --non-interactive || true
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build APK
+        run: eas build --platform android --profile preview --non-interactive --no-wait
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
