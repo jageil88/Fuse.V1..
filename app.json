@@ -4,16 +4,9 @@
     "slug": "fuse-scooter",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#080808"
-    },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#080808"
       },
       "package": "com.fuse.scooter",
@@ -38,7 +31,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "fuse-scooter-v1"
+        "projectId": "fuse-scooter"
       }
     }
   }
