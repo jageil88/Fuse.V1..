@@ -18,33 +18,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
       - name: Fix react version
         run: |
           sed -i 's/"react": "18.3.2"/"react": "18.3.1"/' package.json
-          echo "React version fixed"
-
-      - name: Fix react-native version
-        run: |
           sed -i 's/"react-native": "0.76.5"/"react-native": "0.76.3"/' package.json
-          echo "React Native version fixed"
+          echo "Versions fixed"
 
       - name: Install dependencies
-        run: |
-          npm install --legacy-peer-deps
-          echo "Dependencies installed"
+        run: npm install --legacy-peer-deps
 
       - name: Setup Expo
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-
-      - name: Verify EAS config
-        run: |
-          echo "EAS config:"
-          cat eas.json
 
       - name: Build Android APK
         run: |
@@ -53,9 +41,4 @@ jobs:
             --profile preview \
             --non-interactive \
             --no-wait
-          echo "Build submitted to Expo"
-
-      - name: Done
-        run: |
-          echo "APK wird auf expo.dev/builds gebaut"
-          echo "In 10-15 Minuten fertig"
+          echo "Build submitted"
