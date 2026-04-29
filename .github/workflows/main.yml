@@ -2,32 +2,60 @@ name: Build Fuse APK
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Fix react version
-        run: sed -i 's/"react": "18.3.2"/"react": "18.3.1"/' package.json
+        run: |
+          sed -i 's/"react": "18.3.2"/"react": "18.3.1"/' package.json
+          echo "React version fixed"
 
-      - name: Install deps
-        run: npm install --legacy-peer-deps
+      - name: Fix react-native version
+        run: |
+          sed -i 's/"react-native": "0.76.5"/"react-native": "0.76.3"/' package.json
+          echo "React Native version fixed"
 
-      - uses: expo/expo-github-action@v8
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+          echo "Dependencies installed"
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Init EAS project
-        run: eas init --id fuse-scooter --non-interactive || true
+      - name: Verify EAS config
+        run: |
+          echo "EAS config:"
+          cat eas.json
 
-      - name: Build APK
-        run: eas build --platform android --profile preview --non-interactive --no-wait
+      - name: Build Android APK
+        run: |
+          eas build \
+            --platform android \
+            --profile preview \
+            --non-interactive \
+            --no-wait
+          echo "Build submitted to Expo"
+
+      - name: Done
+        run: |
+          echo "APK wird auf expo.dev/builds gebaut"
+          echo "In 10-15 Minuten fertig"
